@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Password Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-links a:hover {
+            background-color: #f0f0f0;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 60px 0;
+        }
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .password-demo {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        .password-demo h3 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .demo-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .demo-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .strength-meter {
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+            border-radius: 10px;
+        }
+        .strength-text {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .feedback {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .feedback ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .user-info {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🔐 Advanced Password Checker</div>
+            <ul class="nav-links">
+                {% if user.is_authenticated %}
+                    <li>Welcome, {{ user.username }}!</li>
+                    <li><a href="{% url 'logout' %}" class="btn-secondary">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="btn-primary">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="btn-primary">Register</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <h1>Advanced Password Security</h1>
+            <p>Protect your accounts with scientifically-backed password strength analysis</p>
+            
+            {% if user.is_authenticated %}
+                <div class="user-info">
+                    <h3>Welcome back, {{ user.username }}! 🎉</h3>
+                    <p>Your account is secured with our advanced password validation system.</p>
+                    <p>Email: {{ user.email }}</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>🧮 Entropy Calculation</h3>
+                <p>Uses mathematical entropy calculations to measure true password strength, going beyond simple character counting.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔍 Pattern Detection</h3>
+                <p>Identifies and penalizes common patterns like sequential characters, repeated characters, and keyboard patterns.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📚 Dictionary Checking</h3>
+                <p>Compares against common password databases including the RockYou dataset to prevent easily guessable passwords.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎯 Smart Feedback</h3>
+                <p>Provides specific, actionable suggestions to improve password strength while maintaining usability.</p>
+            </div>
+        </div>
+
+        <div class="password-demo">
+            <h3>Try Our Password Checker</h3>
+            <input type="password" id="password-input" class="demo-input" placeholder="Enter a password to test its strength...">
+            <div class="strength-text" id="strength-text">Password Strength: Unknown</div>
+            <div class="strength-meter">
+                <div class="strength-bar" id="strength-bar"></div>
+            </div>
+            <div class="feedback" id="feedback" style="display: none;">
+                <h4>Feedback:</h4>
+                <ul id="feedback-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('password-input').addEventListener('input', async function() {
+            const password = this.value;
+            if (!password) {
+                document.getElementById('strength-text').textContent = 'Password Strength: Unknown';
+                document.getElementById('strength-bar').style.width = '0%';
+                document.getElementById('feedback').style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/check-password/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                    body: JSON.stringify({ password: password })
+                });
+                
+                const data = await response.json();
+                updateStrengthDisplay(data);
+            } catch (error) {
+                console.error('Error checking password:', error);
+            }
+        });
+
+        function updateStrengthDisplay(data) {
+            const strengthText = document.getElementById('strength-text');
+            const strengthBar = document.getElementById('strength-bar');
+            const feedback = document.getElementById('feedback');
+            const feedbackList = document.getElementById('feedback-list');
+
+            strengthText.textContent = `Password Strength: ${data.strength}`;
+            
+            const percentage = Math.min((data.effective_entropy / 128) * 100, 100);
+            strengthBar.style.width = percentage + '%';
+            
+            // Color coding based on strength
+            if (data.effective_entropy < 28) {
+                strengthBar.style.backgroundColor = '#e74c3c';
+            } else if (data.effective_entropy < 36) {
+                strengthBar.style.backgroundColor = '#f39c12';
+            } else if (data.effective_entropy < 60) {
+                strengthBar.style.backgroundColor = '#f1c40f';
+            } else if (data.effective_entropy < 128) {
+                strengthBar.style.backgroundColor = '#27ae60';
+            } else {
+                strengthBar.style.backgroundColor = '#2ecc71';
+            }
+
+            // Show feedback
+            if (data.feedback && data.feedback.length > 0) {
+                feedbackList.innerHTML = '';
+                data.feedback.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    feedbackList.appendChild(li);
+                });
+                feedback.style.display = 'block';
+            } else {
+                feedback.style.display = 'none';
+            }
+        }
+    </script>
+    {% csrf_token %}
+</body>
+</html>
